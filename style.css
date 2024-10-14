@@ -2,8 +2,14 @@
   font-family: 'Courier New', Courier, monospace;
 }
 
+/* Hide scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  display: none; /* For webkit browsers (Chrome, Safari, etc.) */
+}
+
 .btn-group{
   display: flex;
+  justify-content: space-evenly;
   flex-wrap: wrap;
   gap: 10px;
 }
@@ -16,7 +22,7 @@
   cursor: pointer;
   text-decoration: none;
   display: inline-block;
-  width: 120px;
+  width: 100%;
 }
 
 .btn-group__button:visited{
@@ -30,6 +36,8 @@
   align-items: center;
   gap: 10px;
   margin-bottom: 24px;
+  width: 100%;
+  position: relative;
 }
 
 .worker-counter__button{
@@ -50,12 +58,14 @@
 .tabs {
   display: flex;
   margin-bottom: 24px;
-  border-bottom: 1px solid #ccc;
 }
 
 .tab{
   padding: 12px;
   cursor: pointer;
+  width: 100px;
+  min-width: 100px;
+  border-bottom: 1px solid #ccc;
 }
 
 .tab.active{
