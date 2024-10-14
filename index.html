@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KSKT</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+  <div id="app">
+    <p>
+      <b>Tinggal Klik</b>
+    </p>
+    <div class="worker-counter">
+      <span class="worker-counter__title">Jumlah Manusia: </span>
+      <button class="worker-counter__button" @click="workerAction('substract')">-</button>
+      <span class="worker-counter__total">{{ workerCounter }}</span>
+      <button class="worker-counter__button" @click="workerAction('add')">+</button>
+    </div>
+    <div class="tabs">
+      <div
+        v-for="i in workerCounter"
+        class="tab"
+        :class="i === tab ? 'active' : ''"
+        @click="tab = i"
+        >
+        Manusia {{ i.toString().padStart(2, '0') }}
+      </div>
+    </div>
+  
+    <div class="btn-group">
+      <template v-for="(phoneNumber, i) in phoneNumbers" :key="i">
+        <div v-if="i >= Math.ceil(phoneNumbers.length / workerCounter) * (tab - 1) && i < Math.ceil(phoneNumbers.length / workerCounter) * tab">
+          <a :href="setUrl(phoneNumber)" target="_blank">
+            <button class="btn-group__button">No. {{ (i + 1).toString().padStart(3, '0') }}</button>
+          </a>
+        </div>
+      </template>
+    </div>
+  </div>
+
+  <script>
+    const { createApp, ref, onMounted } = Vue
+
+    createApp({
+      setup() {
+        const tab = ref(1)
+        const workerCounter = ref(3)
+        const setUrl = (phone) => {
+          const text = '🍀%20𝗛𝗢𝗟𝗗%20𝗢𝗡!%20𝗙𝗘𝗦𝗧𝗜𝗞𝗔%20%23𝟳%20𝗜𝗦%20𝗕𝗔𝗖𝗞%20𝗔𝗡𝗗%20𝗕𝗜𝗚𝗚𝗘𝗥%20𝗧𝗛𝗔𝗡%20𝗘𝗩𝗘𝗥!%20🍀%0a%0aTahun%20ini,%20𝐅𝐄𝐒𝐓𝐈𝐊𝐀%20%23𝟕%20hadir%20dengan%20kejutan%20luar%20biasa!%20🔥%20Dalam%20kolaborasi%20spektakuler%20bersama%20𝐒𝐄𝐒𝐂%20(STIKOM%20E-Sports%20Championship),%20kami%20siap%20memberikan%20rangkaian%20kompetisi%20yang%20lebih%20seru%20dan%20menantang!%20💥%0a%0a📅%20Pendaftaran%20dibuka%20dari%20𝟳%20𝗢𝗸𝘁𝗼𝗯𝗲𝗿%20𝗵𝗶𝗻𝗴𝗴𝗮%20𝟱%20𝗡𝗼𝘃𝗲𝗺𝗯𝗲𝗿%20𝟮𝟬𝟮𝟰!%0a%0a🎮%20𝗞𝗔𝗧𝗘𝗚𝗢𝗥𝗜%20𝗨𝗠𝗨𝗠:%0aE-Sports:%20E-Football,%20HOK%0aAkademik:%20Fotografi,%20UI%2FUX%0a%0a📚%20𝗞𝗔𝗧𝗘𝗚𝗢𝗥𝗜%20𝗦𝗠𝗔%2F𝗞:%0aE-Sports:%20Free%20Fire,%20Mobile%20Legends%0aAkademik:%20Web%20Design,%20Poster%20Digital%0a%0aDaftar%20sekarang%20dan%20tunjukkan%20bahwa%20kamu%20adalah%20yang%20terbaik!%20Kunjungi%20linktr.ee%2Ffestika%20untuk%20semua%20informasi%20yang%20kamu%20butuhkan%20dan%20mulai%20petualanganmu!%0a%0aJangan%20lupa%20ikuti%20kami%20di%20Instagram%20untuk%20update%20terkini%20@himas_festika!'
+          return `https://api.whatsapp.com/send?phone=${phone}&text=${text}`
+        }
+        const phoneNumbers = ref([])
+
+        const fetchData = async () => {
+          try {
+            const response = await fetch("/data.json");
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            phoneNumbers.value = data.data;
+          } catch (error) {
+            console.error("Error fetching data:", error);
+          }
+        };
+
+        const workerAction = (action) => {
+          if (action === 'add') {
+            workerCounter.value++
+          } else if(action === 'substract') {
+            if (workerCounter.value <= 1) 
+              workerCounter.value = 1
+            else 
+              workerCounter.value--
+
+            tab.value = workerCounter.value > tab.value ? tab.value : workerCounter.value
+          }
+        }
+
+        onMounted(fetchData);
+
+        return {
+          workerCounter, workerAction, phoneNumbers, setUrl, tab
+        }
+      }
+    }).mount('#app')
+  </script>
+</body>
+</html>
